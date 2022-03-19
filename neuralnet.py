@@ -100,7 +100,6 @@ class nn:
 
 
 
-
     def forprop(self):
         self.z1 =  np.dot(self.layer1, self.image) + self.b1 #10x100, 100x1
         assert self.z1.shape, (10, 1)
