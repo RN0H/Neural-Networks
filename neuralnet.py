@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path as p
 
 
-def randomweights():
-    d = p(r"/path/weights.txt")
+def randomweights(d):
 
     with open(d,'w') as d:
         for _ in range(10):
@@ -164,6 +163,8 @@ class nn:
         return z*(1-z)
 
 if __name__ == "__main__":
+
+    d = p(r"/path/weights.txt")
     randomweights()
 
     def train(n):
@@ -174,20 +175,20 @@ if __name__ == "__main__":
             if choice<0.3333:
                 x,y = random.randint(1,6),random.randint(1,6)
                 C[x,y] = C[x,y+1] = C[x, y+2] =  C[x+1,y+2] =  C[x+2, y+2] = C[x+2,y+1] = C[x+2, y] = C[x+1, y] = 1
-                nn(C.reshape(100,1),np.array([[1], [0], [0]]),"/home/rohan/projects/3py/weights.txt").run()
+                nn(C.reshape(100,1),np.array([[1], [0], [0]]),"/path/weights.txt").run()
                 a+=1
             elif 0.3333<choice<0.6667:
                 I = C.copy()
                 x = random.randint(3,7)
                 I[:,x] = 1
-                nn(I.reshape(100,1),np.array([[0], [1], [0]]),"/home/rohan/projects/3py/weights.txt").run()
+                nn(I.reshape(100,1),np.array([[0], [1], [0]]),"/path/weights.txt").run()
                 b+=1
             else:
                 x,y = random.randint(1,9),random.randint(1,9)
                 X = C.copy()
                 X[:,y] = 1
                 X[x,:] =1 
-                nn(X.reshape(100,1),np.array([[0], [0], [1]]),"/home/rohan/projects/3py/weights.txt").run()
+                nn(X.reshape(100,1),np.array([[0], [0], [1]]),"/path/weights.txt").run()
                 c+=1
         print(a,b,c)
 
@@ -198,20 +199,20 @@ if __name__ == "__main__":
             if  choice< 0.3:    #O
                 x,y = random.randint(3,7),random.randint(3,7)
                 C[x,y] = C[x,y+1] = C[x, y+2] =  C[x+1,y+2] =  C[x+2, y+2] = C[x+2,y+1] = C[x+2, y] = C[x+1, y] = 1
-                nn(C.reshape(100,1),np.array([[1], [0], [0]]),"/home/rohan/projects/3py/weights.txt").predict()
+                nn(C.reshape(100,1),np.array([[1], [0], [0]]),"/path/weights.txt").predict()
                     
             elif 0.3< choice <0.7:  #I
                 I = C.copy()
                 x = random.randint(3,7)
                 I[:,x] = 1
-                nn(I.reshape(100,1),np.array([[0], [1], [0]]),"/home/rohan/projects/3py/weights.txt").predict()
+                nn(I.reshape(100,1),np.array([[0], [1], [0]]),"/path/weights.txt").predict()
                 
             else: #X
                 x,y = random.randint(3,7),random.randint(3,7)
                 X = C.copy()
                 X[:,y] = 1
                 X[x,:] =1
-                nn(X.reshape(100,1),np.array([[0], [0], [1]]),"/home/rohan/projects/3py/weights.txt").predict()
+                nn(X.reshape(100,1),np.array([[0], [0], [1]]),"/path/weights.txt").predict()
     
     
     train(100)
