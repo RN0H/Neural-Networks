@@ -151,7 +151,7 @@ class nn:
 if __name__ == "__main__":
 
     
-    X = nn("/home/rohan/Neural_Networks/weights.txt");
+    X = nn("/home/rohan/Neural_Networks/XOR/weights.txt");
     X.randomweights(0, 2,4,2,1) #(flag, *layers)
 
     #XOR
