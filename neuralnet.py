@@ -9,12 +9,14 @@ from pathlib import Path as p
 class nn:
     def __init__(self, memory):
         self.memory = p(memory)
-        self.weights, self.biases = [], []
+        self.weights, self.biases, self.acc = [], [], []
 
-    def set(self, inp, output, alpha):
+
+    def put(self, inp, output, alpha, iterations):
         self.input = inp
         self.output = output
         self.alpha = alpha
+        self.iter = iterations
 
     def randomweights(self, flag, *layers):
         d = self.memory
@@ -30,13 +32,10 @@ class nn:
         
     def run(self):
         print("Begin..")
-        for _ in range(70):
+        for _ in range(self.iter):
             self.reader()
             self.forprop()
             a = self.check()
-            if -0.01<a[0]<0.01 and -0.01<a[1]<0.01 and -0.01<a[2]<0.01:
-                print("Learnt")
-                break
             self.backprop()
             self.learn()
             self.writer()
@@ -44,8 +43,10 @@ class nn:
     def predict(self):
         self.reader()
         self.forprop()
-        self.answer = self.output_
-        print("actual and predicted are:",self.output,'\n and \n',self.answer)
+        
+        print("actual and predicted are:",self.output,'\n and \n',self.output_)
+        self.acc.append(self.output[0]-self.output_[0])
+        print(self.acc[-1])
 
 
     def reader(self):                                               
@@ -79,7 +80,7 @@ class nn:
 
         
 
-    def filter(self, inp, kernel, stride, pad, func):
+    def filter(self, inp, kernel, stride, pad, func):   #   incase needed, especially for cnn
             n = 1+ (len(inp) - len(kernel) + 2*pad)//stride
             output = np.zeros((n,n))
 
@@ -91,8 +92,7 @@ class nn:
 
     def forprop(self):
 
-        self.a0 =  self.input.reshape(100,1)
-        self.inp = self.input.reshape(100,1)
+        self.inp = self.a0 =  self.input
         for idx, (layer, bias) in enumerate(zip(self.weights, self.biases),1):
             setattr(self, 'z'+str(idx), np.dot(layer, self.inp)+bias)
             setattr(self, 'a'+str(idx), self.sigmoid(np.array(getattr(self, 'z'+str(idx)), dtype = float)))
@@ -120,6 +120,10 @@ class nn:
 
     
     def learn(self):
+        '''
+        w = w - @dw
+        b = b - @db
+        '''
         
         for i in range(len(self.layers)-1):
             self.weights[i]-=self.alpha*getattr(self, "dW"+str(i+1))
@@ -147,14 +151,51 @@ class nn:
 if __name__ == "__main__":
 
     
-    X = nn("~/Neural_networks/weights.txt");
-    X.randomweights(0, 100, 50, 30,40, 20, 10, 3) #(flag, *layers)
+    X = nn("/home/rohan/Neural_Networks/weights.txt");
+    X.randomweights(0, 2,4,2,1) #(flag, *layers)
 
-    def train(n):
-        pass
+    #XOR
+    '''
+    A neural network with the configuration (2, 4, 2, 1) where 1 is the output
+    and 2 is the input, and 4, 2 are the hidden layers
 
-    def pred():
-        pass
+    The learning rate, cycle, and iterations are 0.5, 40, 40
+
+    '''
+
+    def train(learning_rate, cycle, iterations):
+        for _ in range(cycle):
+            X.put(np.array([[0],[0]]), np.array([[0]]), learning_rate, iterations)
+            X.run()
+
+            X.put(np.array([[0],[1]]), np.array([[1]]), learning_rate, iterations)
+            X.run()
+
+            X.put(np.array([[1],[0]]), np.array([[1]]), learning_rate, iterations)
+            X.run()
+
+            X.put(np.array([[1],[1]]), np.array([[0]]), learning_rate, iterations)
+            X.run()
+
+    def pred(learning_rate, cycle, iterations):
+         for _ in range(cycle):
+            print('00')
+            X.put(np.array([[0],[0]]), np.array([[0]]), learning_rate, iterations)
+            X.predict()
+
+            print('01')
+            X.put(np.array([[0],[1]]), np.array([[1]]), learning_rate, iterations)
+            X.predict()
+
+            print('10')
+            X.put(np.array([[1],[0]]), np.array([[1]]), learning_rate, iterations)
+            X.predict()
+
+            print('11')
+            X.put(np.array([[1],[1]]), np.array([[0]]), learning_rate, iterations)
+            X.predict()
+         print("accuracy is ", 1-max(X.acc))
     
-    #train(100)
-    #pred()
+    #train(0.5, 40, 40)   
+    pred(0.1, 40, 40)
+
