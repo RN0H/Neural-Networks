@@ -146,8 +146,9 @@ class nn:
 
 if __name__ == "__main__":
 
-    d = p(r"~/Neural_networks/weights.txt")
-    randomweights()
+    
+    X = nn("~/Neural_networks/weights.txt");
+    X.randomweights(0, 100, 50, 30,40, 20, 10, 3) #(flag, *layers)
 
     def train(n):
         pass
