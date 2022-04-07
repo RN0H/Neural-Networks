@@ -6,40 +6,35 @@ import matplotlib.pyplot as plt
 from pathlib import Path as p
 
 
-def randomweights(d):
-
-    with open(d,'w') as d:
-        for _ in range(10):
-            for _ in range(101):
-                     d.write(str(np.random.randn())+', ')
-            d.write('\n')
-
-        for _ in range(5):
-            for _ in range(11):
-                     d.write(str(np.random.randn())+', ')
-            d.write('\n')
-
-        for _ in range(3):
-            for _ in range(6):
-                     d.write(str(np.random.randn())+', ')
-            d.write('\n')
-
-
 class nn:
-    def __init__(self, image, output, memory):
-        self.image = image
-        self.output = output
+    def __init__(self, memory):
         self.memory = p(memory)
-        self.alpha = 0.001
+        self.weights, self.biases = [], []
+
+    def set(self, inp, output, alpha):
+        self.input = inp
+        self.output = output
+        self.alpha = alpha
+
+    def randomweights(self, flag, *layers):
+        d = self.memory
+        self.layers = layers
+        if flag:
+            with open(d,'w') as d:
+                for l in range(len(self.layers)-1):
+                    for i in range(self.layers[l+1]):
+                        for j in range(self.layers[l] + 1):
+                            d.write(str(np.random.randn())+", ")
+                        d.write('\n')
+
         
     def run(self):
         print("Begin..")
-        #y = np.arange(-0.2, 0.2,0.01)
-        for _ in range(10000):
+        for _ in range(70):
             self.reader()
             self.forprop()
             a = self.check()
-            if -0.1<a[0]<0.1 and -0.1<a[1]<0.1 and -0.1<a[2]<0.1:
+            if -0.01<a[0]<0.01 and -0.01<a[1]<0.01 and -0.01<a[2]<0.01:
                 print("Learnt")
                 break
             self.backprop()
@@ -53,95 +48,82 @@ class nn:
         print("actual and predicted are:",self.output,'\n and \n',self.answer)
 
 
-    def reader(self):
+    def reader(self):                                               
 
-        with open(self.memory,'r') as x:
-            f= x.readlines()
-            self.layer1, self.b1 =  np.array([[float(j) for j in i.split(', ')[:100]] for i in f[:10]], dtype = object), np.array([[float(i.split(', ')[100])] for i in f[:10]], dtype = object)
-            self.layer2, self.b2 =  np.array([[float(j) for j in i.split(', ')[:10]] for i in f[10:15]], dtype = object), np.array([[float(i.split(', ')[10])] for i in f[10:15]], dtype = object)
-            self.layer3, self.b3 =  np.array([[float(j) for j in i.split(', ')[:5]] for i in f[15:]], dtype = object), np.array([[float(i.split(', ')[5])] for i in f[15:]], dtype = object)
+        self.weights, self.biases = [], []                                                                            
+        with open(self.memory,'r') as x:                                          
+                                                                                                                                                          
+            f= x.readlines()                                           
+            st = 0
+            for l in range(len(self.layers)-1):
+                end = self.layers[l+1]                
+                self.weights.append(np.array([[float(j) for j in i.split(', ')[:self.layers[l]]] for i in f[st: st + end] ], dtype = object))
+                self.biases.append(np.array([[float(i.split(', ')[self.layers[l]])] for i in f[st: st+end]], dtype = object))
 
+                st+=end
 
     def writer(self):
-
         with open(self.memory, 'w') as d:
-            for be, we in zip(self.layer1,self.b1):
-                for w in  we:
-                    d.write(str(w)+', ')
-                for b in be:
-                    d.write(str(b)+', ')
-                d.write('\n')
+            for ws, bs in zip(self.weights, self.biases):
+                for w,b in zip(ws,bs):
+                    for k in w:
+                        d.write(str(k)+", ")
+                    d.write(str(b[0])+'\n')
 
-            for be, we in zip(self.layer2,self.b2):
-                for w in  we:
-                    d.write(str(w)+', ')
-                for b in be:
-                    d.write(str(b)+', ')
-                d.write('\n')
-
-            for be, we in zip(self.layer3,self.b3):
-                for w in  we:
-                    d.write(str(w)+', ')
-                for b in be:
-                    d.write(str(b)+', ')
-                d.write('\n')
-                
 
     def check(self):
-        self.MSE = self.output - self.output_  #-self.output*np.log(self.output_) + (1-self.output)*np.log(1-self.output_)
-        print(self.MSE)
-        return self.MSE
-        #self.MSE = np.mean( (self.output - self.output_), axis = 1)
-        #print(self.MSE,'\n',self.output)
-        #self.MSE = np.array([list(self.MSE) for _ in range(10)]).reshape(3,10)
+        self.loss = self.output*np.log(self.output_) + (1-self.output)*np.log(1-self.output_)*(1/len(self.output_))
+        print(self.output, '--',self.output_)
+        print("-------------")
+        return self.loss
+
         
 
+    def filter(self, inp, kernel, stride, pad, func):
+            n = 1+ (len(inp) - len(kernel) + 2*pad)//stride
+            output = np.zeros((n,n))
 
+            for r in range(0, n,stride):
+                for c in range(0, n, stride):
+                    output[r,c]  = func(np.multiply(inp[r:r+len(kernel), c:c+len(kernel)], kernel))
+            return output
 
 
     def forprop(self):
-        self.z1 =  np.dot(self.layer1, self.image) + self.b1 #10x100, 100x1
-        assert self.z1.shape, (10, 1)
-        self.a1 = self.sigmoid(np.array(self.z1, dtype = float))
 
-        self.z2 =  np.dot(self.layer2, self.a1) + self.b2 #5x10, 10x1
-        assert self.z2.shape, (5,1)
-        self.a2 = self.sigmoid(np.array(self.z2, dtype = float))
+        self.a0 =  self.input.reshape(100,1)
+        self.inp = self.input.reshape(100,1)
+        for idx, (layer, bias) in enumerate(zip(self.weights, self.biases),1):
+            setattr(self, 'z'+str(idx), np.dot(layer, self.inp)+bias)
+            setattr(self, 'a'+str(idx), self.sigmoid(np.array(getattr(self, 'z'+str(idx)), dtype = float)))
+            self.inp = getattr(self, 'a'+str(idx))
 
-        self.z3 = np.dot(self.layer3, self.a2) + self.b3  #3x5, 5x1
-        assert self.z3.shape, (3,1)
-        self.a3= self.softmax(np.array(self.z3, dtype = float))
-        self.output_ = self.a3
-                
+        self.output_ = getattr(self, 'a'+str(len(self.layers)-1))
 
 
     def backprop(self):
+        '''
+        da[l-1] = W[l].T x dz[l]
+        dz[l-1] = da[l-1] x g'(a[l-1])
+        dw[l-1] = d[l-1] a[l-2]/m
+        '''
+        setattr(self, "dA"+str(len(self.layers)-1), - (np.divide(self.output, self.output_) - np.divide(1 - self.output, 1 - self.output_)))
         
-        self.e =  self.MSE                                  #3x1
-        self.d =  np.dot(self.e.T, self.softmax_der(self.output_))   #1x3 3x3  = 1x3
+        for i in range(len(self.layers)-1, 0, -1):
+            if i<len(self.layers)-1:
+                setattr(self, "dA"+str(i), np.dot(self.weights[i].T, getattr(self, "dZ"+str(i+1))))
+            setattr(self, "dZ"+str(i), getattr(self, "dA"+str(i))*self.sigmoid_der(getattr(self, "a"+str(i))))
+            z = getattr(self, "dZ"+str(i))
+            a = getattr(self, 'a'+str(i-1))
+            setattr(self, "dW"+str(i), np.dot(z, a.T)/a.shape[1])
+            setattr(self, "dB"+str(i), np.sum(z, axis = 1, keepdims = True)/a.shape[1])
 
-        self.e3 = np.dot(self.layer3.T, self.d.T)             #5x3 3x1
-        self.dW3 = self.e3 * self.sigmoid_der(self.a2)      #5x1
-        self.db3 = np.mean(self.e3)*np.ones(self.b3.shape)
-        
-        self.e2 = np.dot(self.layer2.T,self.dW3)              #10x5 5x1
-        self.dW2 = self.e2 * self.sigmoid_der(self.a1)        #10x1
-        self.db2= np.mean(self.e2)*np.ones(self.b2.shape)
-
-        self.e1 = np.dot(self.layer1.T, self.dW2)             #100x10 10x1
-        self.dW1 = self.e1 * self.sigmoid_der(self.image)        #100x1  
-        self.db1 = np.mean(self.e1)*np.ones(self.b1.shape)
-        
-
+    
     def learn(self):
-
-        self.layer1-=self.alpha*self.a1.dot(self.dW1.T)      #100, 100x10   (10x10)
-        self.layer2-=self.alpha*self.a2.dot(self.dW2.T)      #5x10 10x10     (5x10)
-        self.layer3-=self.alpha*self.a3.dot(self.dW3.T)      #3x10, 10x5     (3x5)
-
-        self.b1-=self.alpha*self.db1
-        self.b2-=self.alpha*self.db2
-        self.b3-=self.alpha*self.db3
+        
+        for i in range(len(self.layers)-1):
+            self.weights[i]-=self.alpha*getattr(self, "dW"+str(i+1))
+            self.biases[i]-=self.alpha*getattr(self, "dB"+str(i+1))
 
     def softmax(self, z):
         return np.exp(z)/np.sum(np.exp(z))
@@ -164,56 +146,14 @@ class nn:
 
 if __name__ == "__main__":
 
-    d = p(r"/path/weights.txt")
+    d = p(r"~/Neural_networks/weights.txt")
     randomweights()
 
     def train(n):
-        C = np.zeros(100).reshape(10,10)
-        a,b,c = 0,0,0
-        for epoch in range(n):
-            choice = random.randint(0,11)/10
-            if choice<0.3333:
-                x,y = random.randint(1,6),random.randint(1,6)
-                C[x,y] = C[x,y+1] = C[x, y+2] =  C[x+1,y+2] =  C[x+2, y+2] = C[x+2,y+1] = C[x+2, y] = C[x+1, y] = 1
-                nn(C.reshape(100,1),np.array([[1], [0], [0]]),"/path/weights.txt").run()
-                a+=1
-            elif 0.3333<choice<0.6667:
-                I = C.copy()
-                x = random.randint(3,7)
-                I[:,x] = 1
-                nn(I.reshape(100,1),np.array([[0], [1], [0]]),"/path/weights.txt").run()
-                b+=1
-            else:
-                x,y = random.randint(1,9),random.randint(1,9)
-                X = C.copy()
-                X[:,y] = 1
-                X[x,:] =1 
-                nn(X.reshape(100,1),np.array([[0], [0], [1]]),"/path/weights.txt").run()
-                c+=1
-        print(a,b,c)
+        pass
 
     def pred():
-        C = np.zeros(100).reshape(10,10)
-        for epoch in range(100):
-            choice = random.randint(1,10)/10
-            if  choice< 0.3:    #O
-                x,y = random.randint(3,7),random.randint(3,7)
-                C[x,y] = C[x,y+1] = C[x, y+2] =  C[x+1,y+2] =  C[x+2, y+2] = C[x+2,y+1] = C[x+2, y] = C[x+1, y] = 1
-                nn(C.reshape(100,1),np.array([[1], [0], [0]]),"/path/weights.txt").predict()
-                    
-            elif 0.3< choice <0.7:  #I
-                I = C.copy()
-                x = random.randint(3,7)
-                I[:,x] = 1
-                nn(I.reshape(100,1),np.array([[0], [1], [0]]),"/path/weights.txt").predict()
-                
-            else: #X
-                x,y = random.randint(3,7),random.randint(3,7)
-                X = C.copy()
-                X[:,y] = 1
-                X[x,:] =1
-                nn(X.reshape(100,1),np.array([[0], [0], [1]]),"/path/weights.txt").predict()
+        pass
     
-    
-    train(100)
-    pred()
+    #train(100)
+    #pred()
