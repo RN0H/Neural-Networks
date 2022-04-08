@@ -7,16 +7,17 @@ from pathlib import Path as p
 
 
 class nn:
-    def __init__(self, memory):
+    def __init__(self, memory, alpha, iterations):
         self.memory = p(memory)
         self.weights, self.biases, self.acc = [], [], []
-
-
-    def put(self, inp, output, alpha, iterations):
-        self.input = inp
-        self.output = output
         self.alpha = alpha
         self.iter = iterations
+
+
+    def put(self, inp, output):
+        self.input = inp
+        self.output = output
+        
 
     def randomweights(self, flag, *layers):
         d = self.memory
@@ -151,7 +152,7 @@ class nn:
 if __name__ == "__main__":
 
     
-    X = nn("/home/rohan/Neural_Networks/XOR/weights.txt");
+    X = nn("/home/rohan/Neural_Networks/XOR/weights.txt", 0.1, 40);
     X.randomweights(0, 2,4,2,1) #(flag, *layers)
 
     #XOR
@@ -163,39 +164,40 @@ if __name__ == "__main__":
 
     '''
 
-    def train(learning_rate, cycle, iterations):
+    def train(cycle):
         for _ in range(cycle):
-            X.put(np.array([[0],[0]]), np.array([[0]]), learning_rate, iterations)
+            X.put(np.array([[0],[0]]), np.array([[0]]))
             X.run()
 
-            X.put(np.array([[0],[1]]), np.array([[1]]), learning_rate, iterations)
+            X.put(np.array([[0],[1]]), np.array([[1]]))
             X.run()
 
-            X.put(np.array([[1],[0]]), np.array([[1]]), learning_rate, iterations)
+            X.put(np.array([[1],[0]]), np.array([[1]]))
             X.run()
 
-            X.put(np.array([[1],[1]]), np.array([[0]]), learning_rate, iterations)
+            X.put(np.array([[1],[1]]), np.array([[0]]))
             X.run()
 
-    def pred(learning_rate, cycle, iterations):
+    def pred(cycle):
          for _ in range(cycle):
             print('00')
-            X.put(np.array([[0],[0]]), np.array([[0]]), learning_rate, iterations)
+            X.put(np.array([[0],[0]]), np.array([[0]]))
             X.predict()
 
             print('01')
-            X.put(np.array([[0],[1]]), np.array([[1]]), learning_rate, iterations)
+            X.put(np.array([[0],[1]]), np.array([[1]]))
             X.predict()
 
             print('10')
-            X.put(np.array([[1],[0]]), np.array([[1]]), learning_rate, iterations)
+            X.put(np.array([[1],[0]]), np.array([[1]]))
             X.predict()
 
             print('11')
-            X.put(np.array([[1],[1]]), np.array([[0]]), learning_rate, iterations)
+            X.put(np.array([[1],[1]]), np.array([[0]]))
             X.predict()
          print("accuracy is ", 1-max(X.acc))
     
-    #train(0.5, 40, 40)   
-    pred(0.1, 40, 40)
+    #train(40)   
+    pred(40)
+
 
