@@ -151,10 +151,10 @@ class nn:
 if __name__ == "__main__":
 
     
-    X = nn("/home/rohan/Neural_Networks/XOR/weights.txt", 0.1, 40);
-    
+    X = nn("/home/rohan/Neural_Networks/binary/weights.txt", 0.2, 30);
+   
 
-    #XOR
+    #binary
     '''
     A neural network with the configuration (2, 4, 2, 1) where 1 is the output
     and 2 is the input, and 4, 2 are the hidden layers
@@ -164,41 +164,29 @@ if __name__ == "__main__":
     '''
 
     def train(cycle):
-        X.architecture(1, 2,4,2,1) #(flag, *layers)
+        output_ = np.zeros((1,16)).reshape(-1,1)
+        X.architecture(1, 5,  20, 18, 16) #(flag, *layers)
         for _ in range(cycle):
-            X.put(np.array([[0],[0]]), np.array([[0]]))
+            output_*=0
+            number = cycle%16
+            output_[number] = 1
+            input_ = np.array([float(i) for i in bin(number)[2:].zfill(5)], dtype=float).reshape(-1,1)
+            X.put(input_, output_)
             X.run()
 
-            X.put(np.array([[0],[1]]), np.array([[1]]))
-            X.run()
-
-            X.put(np.array([[1],[0]]), np.array([[1]]))
-            X.run()
-
-            X.put(np.array([[1],[1]]), np.array([[0]]))
-            X.run()
 
     def pred(cycle):
-         X.architecture(0, 2,4,2,1) #(flag, *layers)
-         for _ in range(cycle):
-            print('00')
-            X.put(np.array([[0],[0]]), np.array([[0]]))
+        output_ = np.zeros((1,16)).reshape(-1,1)
+        X.architecture(1, 5,  20, 18, 16) #(flag, *layers)
+        for _ in range(cycle):
+            output_*=0
+            number = 0#random.randint(0,16)
+            output_[min(number, 15)] = 1
+            input_ = np.array([float(i) for i in bin(number)[2:].zfill(5)], dtype=float).reshape(-1,1)
+            X.put(input_, output_)
             X.predict()
 
-            print('01')
-            X.put(np.array([[0],[1]]), np.array([[1]]))
-            X.predict()
-
-            print('10')
-            X.put(np.array([[1],[0]]), np.array([[1]]))
-            X.predict()
-
-            print('11')
-            X.put(np.array([[1],[1]]), np.array([[0]]))
-            X.predict()
-         print("accuracy is ", 1-max(X.acc))
+        print("accuracy is ", 1-max(X.acc))
     
-    #train(40)   
-    pred(40)
-
-
+    #train(500)   
+    pred(1)
