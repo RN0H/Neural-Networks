@@ -42,10 +42,19 @@ class nn:
     def predict(self):
         self.reader()
         self.forprop()
+        output,output_ = 0,0
+        for _ in range(17):
+            if self.output[_]==1:
+                output = _
+                break
+        for _ in range(17):
+            if self.output_[_]>0.9:
+                output_ = _
+                break
         
-        print("actual and predicted are:",self.output,'\n and \n',self.output_)
-        self.acc.append(self.output[0]-self.output_[0])
-        print(self.acc[-1])
+        print("actual and predicted are:",output,'\n and \n',output_)
+        self.acc.append(np.mean(abs(self.output-self.output_)))
+        
 
 
     def reader(self):                                               
@@ -151,24 +160,24 @@ class nn:
 if __name__ == "__main__":
 
     
-    X = nn("/home/rohan/Neural_Networks/binary/weights.txt", 0.2, 30);
+    X = nn("/home/rohan/Neural_Networks/binary/weights.txt", 0.22, 20);
    
 
     #binary
     '''
-    A neural network with the configuration (2, 4, 2, 1) where 1 is the output
-    and 2 is the input, and 4, 2 are the hidden layers
+    A neural network with the configuration (5, 20, 18, 17) where 17 is the output
+    and 5 is the input, and 20, 18 are the hidden layers
 
-    The learning rate, cycle, and iterations are 0.5, 40, 40
+    The learning rate, cycle, and iterations are 0.22, 500, 20
 
     '''
 
     def train(cycle):
-        output_ = np.zeros((1,16)).reshape(-1,1)
-        X.architecture(1, 5,  20, 18, 16) #(flag, *layers)
+        output_ = np.zeros((1,17)).reshape(-1,1)
+        X.architecture(1, 5,  20, 18, 17) #(flag, *layers)
         for _ in range(cycle):
             output_*=0
-            number = cycle%16
+            number = _%17
             output_[number] = 1
             input_ = np.array([float(i) for i in bin(number)[2:].zfill(5)], dtype=float).reshape(-1,1)
             X.put(input_, output_)
@@ -176,17 +185,17 @@ if __name__ == "__main__":
 
 
     def pred(cycle):
-        output_ = np.zeros((1,16)).reshape(-1,1)
-        X.architecture(1, 5,  20, 18, 16) #(flag, *layers)
+        output_ = np.zeros((1,17)).reshape(-1,1)
+        X.architecture(0, 5,  20, 18, 17) #(flag, *layers)
         for _ in range(cycle):
             output_*=0
-            number = 0#random.randint(0,16)
-            output_[min(number, 15)] = 1
+            number = random.randint(0,15)
+            output_[number] = 1
             input_ = np.array([float(i) for i in bin(number)[2:].zfill(5)], dtype=float).reshape(-1,1)
             X.put(input_, output_)
             X.predict()
 
-        print("accuracy is ", 1-max(X.acc))
+        print("accuracy is ", 1-np.mean(max(X.acc)))
     
     #train(500)   
-    pred(1)
+    pred(40)
