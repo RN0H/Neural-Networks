@@ -1,3 +1,13 @@
+ #!/usr/bin/env python3 
+# -*- coding: utf-8 -*- 
+
+#================================================
+# Author : Rohan Panicker
+# Created Date: 12/4/22
+# version ='1.0'
+#================================================
+
+
 import numpy as np
 import random
 import matplotlib.pyplot as plt
