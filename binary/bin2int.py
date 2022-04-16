@@ -44,7 +44,7 @@ class nn:
         for _ in range(self.iter):
             self.reader()
             self.forprop()
-            a = self.check()
+            self.check()
             self.backprop()
             self.learn()
             self.writer()
@@ -94,7 +94,7 @@ class nn:
         self.loss = self.output*np.log(self.output_) + (1-self.output)*np.log(1-self.output_)*(1/len(self.output_))
         print(self.output, '--',self.output_)
         print("-------------")
-        return self.loss
+        
 
         
 
