@@ -100,6 +100,10 @@ class nn:
 
 
     def forprop(self):
+        '''
+        z = wx + b
+        a = g(z)
+        '''
 
         self.inp = self.a0 =  self.input
         for idx, (layer, bias) in enumerate(zip(self.weights, self.biases),1):
@@ -114,7 +118,7 @@ class nn:
         '''
         da[l-1] = W[l].T x dz[l]
         dz[l-1] = da[l-1] x g'(a[l-1])
-        dw[l-1] = d[l-1] a[l-2]/m
+        dw[l-1] = dz[l-1] a[l-2]/m
         '''
         setattr(self, "dA"+str(len(self.layers)-1), - (np.divide(self.output, self.output_) - np.divide(1 - self.output, 1 - self.output_)))
         
