@@ -174,7 +174,7 @@ class nn:
 if __name__ == "__main__":
 
     
-    X = nn("/home/rohan/Neural_Networks/binary/weights.txt", 0.22, 20);
+    X = nn("/home/rohan/Neural_Networks/BIN2INT/weights.txt", 0.22, 20);
    
 
     #binary
