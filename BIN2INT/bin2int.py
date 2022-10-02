@@ -158,10 +158,7 @@ class nn:
         soft_der = np.zeros((len(z), len(z)))
         for j in range(len(z)):
             for i in range(len(z)):
-                if i == j:
-                    soft_der[i,i] = z[i]*(1-z[i])
-                else:
-                    soft_der[i,j] = -z[i]*z[j]
+                    soft_der[i,i] = z[i]*(1-z[i]) if i == j else -z[i]*z[j]
         return soft_der
 
 
