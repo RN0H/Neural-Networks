@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+    <Neural-Networks_Parameter type="Path">
+        <value>C:\Users\HP\GitFiles\Neural-Networks\XOR\weights.txt</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Layers">
+        <value>2,4,2,1</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Alpha">
+        <value>0.1</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Iterations">
+        <value>40</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Train?">
+        <value>0</value>
+    </Neural-Networks_Parameter>
+
+</data>

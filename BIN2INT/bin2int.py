@@ -12,6 +12,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from pathlib import Path as p
+import XMLreader
 
 
 class nn:
@@ -170,10 +171,19 @@ class nn:
 
 if __name__ == "__main__":
 
+    filename = 'Data.xml'
+    dom = XMLreader.xml.dom.minidom.parse(filename)
+    NN = dom.getElementsByTagName("Neural-Networks_Parameter")
+    XMLreader.ParseXML(NN)
     
-    X = nn("/home/rohan/Neural_Networks/BIN2INT/weights.txt", 0.22, 20);
-   
-
+    path   = ''.join(XMLreader.d["Path"])
+    layers = (''.join(XMLreader.d["Layers"])).split(',')
+    alpha =  float((XMLreader.d["Alpha"]))
+    iterations = int(XMLreader.d["Iterations"])
+    trainflag = int(XMLreader.d["Train?"])
+    
+    X = nn(path, alpha , iterations);
+    
     #binary
     '''
     A neural network with the configuration (5, 20, 18, 17) where 17 is the output
@@ -185,7 +195,7 @@ if __name__ == "__main__":
 
     def train(cycle):
         output_ = np.zeros((1,17)).reshape(-1,1)
-        X.architecture(1, 5,  20, 18, 17) #(flag, *layers)
+        X.architecture(1, *(int(i) for i in layers)) #(flag, *layers)
         for _ in range(cycle):
             output_*=0
             number = _%17
@@ -197,7 +207,7 @@ if __name__ == "__main__":
 
     def pred(cycle):
         output_ = np.zeros((1,17)).reshape(-1,1)
-        X.architecture(0, 5,  20, 18, 17) #(flag, *layers)
+        X.architecture(0, *(int(i) for i in layers)) #(flag, *layers)
         for _ in range(cycle):
             output_*=0
             number = random.randint(0,15)
@@ -207,6 +217,8 @@ if __name__ == "__main__":
             X.predict()
 
         print("accuracy is ", 1-np.mean(max(X.acc)))
-    
-    #train(500)   
-    pred(40)
+        
+    if trainflag:
+        train(500)
+    else:   
+        pred(40)

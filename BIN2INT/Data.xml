@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+
+    <Neural-Networks_Parameter type="Path">
+        <value>C:\Users\HP\GitFiles\Neural-Networks\BIN2INT\weights.txt</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Layers">
+        <value>5,20,18,17</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Alpha">
+        <value>0.22</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Iterations">
+        <value>40</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Train?">
+        <value>0</value>
+    </Neural-Networks_Parameter>
+
+</data>

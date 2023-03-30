@@ -12,6 +12,7 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 from pathlib import Path as p
+import XMLreader
 
 
 class nn:
@@ -164,10 +165,19 @@ class nn:
 
 if __name__ == "__main__":
 
+    filename = 'Data.xml'
+    dom = XMLreader.xml.dom.minidom.parse(filename)
+    NN = dom.getElementsByTagName("Neural-Networks_Parameter")
+    XMLreader.ParseXML(NN)
     
-    X = nn("/home/rohan/Neural_Networks/XOR/weights.txt", 0.1, 40);
-    
+    path   = ''.join(XMLreader.d["Path"])
+    layers = (''.join(XMLreader.d["Layers"])).split(',')
+    alpha =  float((XMLreader.d["Alpha"]))
+    iterations = int(XMLreader.d["Iterations"])
+    trainflag = int(XMLreader.d["Train?"])
 
+    X = nn(path, alpha , iterations);
+    
     #XOR
     '''
     A neural network with the configuration (2, 4, 2, 1) where 1 is the output
@@ -176,9 +186,8 @@ if __name__ == "__main__":
     The learning rate, cycle, and iterations are 0.5, 40, 40
 
     '''
-
     def train(cycle):
-        X.architecture(1, 2,4,2,1) #(flag, *layers)
+        X.architecture(1, *(int(i) for i in layers)) #(flag, *layers)
         for _ in range(cycle):
             X.put(np.array([[0],[0]]), np.array([[0]]))
             X.run()
@@ -193,7 +202,7 @@ if __name__ == "__main__":
             X.run()
 
     def pred(cycle):
-         X.architecture(0, 2,4,2,1) #(flag, *layers)
+         X.architecture(0, *(int(i) for i in layers)) #(flag, *layers)
          for _ in range(cycle):
             print('00')
             X.put(np.array([[0],[0]]), np.array([[0]]))
@@ -212,7 +221,9 @@ if __name__ == "__main__":
             X.predict()
          print("accuracy is ", 1-max(X.acc))
     
-    #train(40)   
-    pred(40)
+    if trainflag:
+        train(40) 
+    else:  
+        pred(40)
 
 
