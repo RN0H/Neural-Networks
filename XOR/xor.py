@@ -7,12 +7,15 @@
 # version ='1.0'
 #================================================
 
+import sys
+sys.path.append(r"C:\Users\HP\GitFiles\Neural-Networks")
 
 import numpy as np
 import random
 import matplotlib.pyplot as plt
 from pathlib import Path as p
 import XMLreader
+
 
 
 class nn:

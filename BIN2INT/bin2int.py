@@ -7,6 +7,8 @@
 # version ='1.0'
 #================================================
 
+import sys
+sys.path.append(r"C:\Users\HP\GitFiles\Neural-Networks")
 
 import numpy as np
 import random
