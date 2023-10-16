@@ -5,7 +5,7 @@
     </Neural-Networks_Parameter>
 
     <Neural-Networks_Parameter type="Layers">
-        <value>2,4,2,1</value>
+        <value>2,3,2,1</value>
     </Neural-Networks_Parameter>
 
     <Neural-Networks_Parameter type="Alpha">
@@ -13,11 +13,11 @@
     </Neural-Networks_Parameter>
 
     <Neural-Networks_Parameter type="Iterations">
-        <value>40</value>
+        <value>50</value>
     </Neural-Networks_Parameter>
 
     <Neural-Networks_Parameter type="Train?">
-        <value>0</value>
+        <value>1</value>
     </Neural-Networks_Parameter>
 
 </data>

@@ -154,6 +154,38 @@ class nn:
             self.weights[i]-=self.alpha*getattr(self, "dW"+str(i+1))
             self.biases[i]-=self.alpha*getattr(self, "dB"+str(i+1))
 
+    def linear(self, z):
+        return z
+
+    def linear_der(self, linz):
+        return 1
+    
+    def ReLU(self, z):
+        return max(0, z)
+    
+    def ReLU_der(self,relz):
+        return 1 if relz >=0 else 0
+    
+    def LeakyRelU(self, z, K):
+        return max(k*z, z)
+    
+    def LeakyRelU_der(self, leakyrelz, K):
+        return 1 if leakyrelz>=0 else K
+
+    def sigmoid(self,z):
+        return 1/(1+np.exp(-z))
+
+    def sigmoid_der(self,sigmz):
+        return sigmz*(1-sigmz)
+    
+    def tanh(self, z):
+        en = np.exp(z)
+        en_ = 1 / en
+        return (en - en_)/(en + en_)
+    
+    def tanh_der(self,tanhz):
+        return 1 - tanhz*tanhz
+    
     def softmax(self, z):
         return np.exp(z)/np.sum(np.exp(z))
 
@@ -161,15 +193,11 @@ class nn:
         soft_der = np.zeros((len(z), len(z)))
         for j in range(len(z)):
             for i in range(len(z)):
-                    soft_der[i,i] = z[i]*(1-z[i]) if i == j else -z[i]*z[j]
+                if i == j:
+                    soft_der[i,i] = z[i]*(1-z[i])
+                else:
+                    soft_der[i,j] = -z[i]*z[j]
         return soft_der
-
-
-    def sigmoid(self,z):
-        return 1/(1+np.exp(-z))
-
-    def sigmoid_der(self,z):
-        return z*(1-z)
 
 if __name__ == "__main__":
 

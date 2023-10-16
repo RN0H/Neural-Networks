@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+
+    <Neural-Networks_Parameter type="Path">
+        <value>C:\Users\HP\GitFiles\Neural-Networks\CORDIC\weights.txt</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Grow?">
+        <value>0</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Layers">
+        <value>1,10,1</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Alpha">
+        <value>0.0032142</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Epoch">
+        <value>500</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="counter">
+        <value>100</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Activation Functions">
+        <value>tanh,tanh</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Optimizer">
+        <value>vanilla</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Loss Function">
+        <value>L1</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="PID">
+        <value>0</value>
+    </Neural-Networks_Parameter>
+
+    <Neural-Networks_Parameter type="Train?">
+        <value>0</value>
+    </Neural-Networks_Parameter>
+
+</data>
